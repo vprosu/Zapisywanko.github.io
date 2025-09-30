@@ -1,197 +1,184 @@
-// File Manager Application
-class FileManager {
-    constructor() {
-        this.files = JSON.parse(localStorage.getItem('savedFiles')) || [];
-        this.init();
-    }
+// Zapisywanko Chat - czat z automatycznym zapisem, powiadomieniami i dźwiękiem
+const chatWindow = document.getElementById('chatWindow');
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+const toastContainer = document.getElementById('toastContainer');
+const notifySound = document.getElementById('notifySound');
+const toggleThemeBtn = document.getElementById('toggleTheme');
+const themeIcon = document.getElementById('themeIcon');
 
-    init() {
-        this.setupEventListeners();
-        this.renderFileList();
-    }
-
-    setupEventListeners() {
-        // File upload
-        const uploadBtn = document.getElementById('uploadBtn');
-        const fileInput = document.getElementById('fileInput');
-        
-        uploadBtn.addEventListener('click', () => {
-            const files = fileInput.files;
-            if (files.length > 0) {
-                for (let i = 0; i < files.length; i++) {
-                    this.saveFile(files[i]);
-                }
-                fileInput.value = '';
-            } else {
-                alert('Wybierz plik do zapisania!');
-            }
-        });
-
-        // Text save
-        const saveTextBtn = document.getElementById('saveTextBtn');
-        saveTextBtn.addEventListener('click', () => {
-            this.saveText();
-        });
-
-        // Allow Enter key to save text
-        const fileNameInput = document.getElementById('fileName');
-        fileNameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.saveText();
-            }
-        });
-    }
-
-    saveFile(file) {
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            const fileData = {
-                id: Date.now().toString(),
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                data: e.target.result,
-                date: new Date().toLocaleString()
-            };
-            
-            this.files.push(fileData);
-            this.saveToLocalStorage();
-            this.renderFileList();
-        };
-        
-        if (file.type.startsWith('image/')) {
-            reader.readAsDataURL(file);
-        } else {
-            reader.readAsText(file);
-        }
-    }
-
-    saveText() {
-        const textArea = document.getElementById('textArea');
-        const fileNameInput = document.getElementById('fileName');
-        
-        const text = textArea.value.trim();
-        const fileName = fileNameInput.value.trim();
-        
-        if (!text) {
-            alert('Wpisz tekst do zapisania!');
-            return;
-        }
-        
-        if (!fileName) {
-            alert('Podaj nazwę pliku!');
-            return;
-        }
-        
-        const fileData = {
-            id: Date.now().toString(),
-            name: `${fileName}.txt`,
-            type: 'text/plain',
-            size: new Blob([text]).size,
-            data: text,
-            date: new Date().toLocaleString()
-        };
-        
-        this.files.push(fileData);
-        this.saveToLocalStorage();
-        this.renderFileList();
-        
-        // Clear inputs
-        textArea.value = '';
-        fileNameInput.value = '';
-    }
-
-    deleteFile(id) {
-        if (confirm('Czy na pewno chcesz usunąć ten plik?')) {
-            this.files = this.files.filter(file => file.id !== id);
-            this.saveToLocalStorage();
-            this.renderFileList();
-        }
-    }
-
-    downloadFile(file) {
-        if (file.type.startsWith('image/')) {
-            // For images, create a download link
-            const link = document.createElement('a');
-            link.href = file.data;
-            link.download = file.name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            // For text files, create a blob and download
-            const blob = new Blob([file.data], { type: file.type });
-            const url = URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = file.name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Clean up
-            URL.revokeObjectURL(url);
-        }
-    }
-
-    saveToLocalStorage() {
-        localStorage.setItem('savedFiles', JSON.stringify(this.files));
-    }
-
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    renderFileList() {
-        const fileList = document.getElementById('fileList');
-        const noFilesMessage = document.getElementById('noFilesMessage');
-        
-        if (this.files.length === 0) {
-            noFilesMessage.style.display = 'block';
-            fileList.innerHTML = '';
-            fileList.appendChild(noFilesMessage);
-            return;
-        }
-        
-        noFilesMessage.style.display = 'none';
-        fileList.innerHTML = '';
-        
-        this.files.forEach(file => {
-            const fileCard = document.createElement('div');
-            fileCard.className = 'file-card';
-            
-            let filePreview = '';
-            if (file.type.startsWith('image/')) {
-                filePreview = `<img src="${file.data}" alt="${file.name}">`;
-            } else {
-                filePreview = `<div class="file-preview-text">📄 Tekstowy plik</div>`;
-            }
-            
-            fileCard.innerHTML = `
-                ${filePreview}
-                <div class="file-info">
-                    <div class="file-name">${file.name}</div>
-                    <div class="file-size">${this.formatFileSize(file.size)} • ${file.date}</div>
-                </div>
-                <div class="file-actions">
-                    <button class="download-btn" onclick='fileManager.downloadFile(${JSON.stringify(file)})'>Pobierz</button>
-                    <button class="delete-btn" onclick='fileManager.deleteFile("${file.id}")'>Usuń</button>
-                </div>
-            `;
-            
-            fileList.appendChild(fileCard);
-        });
+// Tryb jasny/czarny
+function setTheme(dark) {
+    if (dark) {
+        document.body.classList.add('dark');
+        themeIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.body.classList.remove('dark');
+        themeIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
     }
 }
+toggleThemeBtn.addEventListener('click', () => {
+    setTheme(!document.body.classList.contains('dark'));
+});
+if (localStorage.getItem('theme') === 'dark') setTheme(true);
 
-// Initialize the app when the page loads
-let fileManager;
-document.addEventListener('DOMContentLoaded', () => {
-    fileManager = new FileManager();
+// Obsługa czatu
+function getMessages() {
+    return JSON.parse(localStorage.getItem('zapisywankoChat') || '[]');
+}
+function saveMessages(msgs) {
+    localStorage.setItem('zapisywankoChat', JSON.stringify(msgs));
+}
+
+function renderMessages() {
+    const msgs = getMessages();
+    chatWindow.innerHTML = '';
+    msgs.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'chat-message user';
+        div.textContent = msg.text;
+        chatWindow.appendChild(div);
+    });
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+renderMessages();
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+    notifySound.currentTime = 0;
+    notifySound.play();
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(40px)';
+        setTimeout(() => toast.remove(), 400);
+    }, 2200);
+}
+
+chatForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+    const msgs = getMessages();
+    msgs.push({ text, time: Date.now() });
+    saveMessages(msgs);
+    renderMessages();
+    showToast('Wiadomość zapisana!');
+    chatInput.value = '';
+});
+
+// Usunięto menadżer plików i podwójne deklaracje zmiennych. Pozostaje tylko kod czatu.
+        const info = document.createElement('div');
+        info.className = 'file-info';
+        if (file.type === 'text') {
+            info.innerHTML = `<div class="file-name">${file.name}</div><div class="file-size">${file.content.length} znaków</div>`;
+        } else if (file.type && file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = file.content;
+            img.alt = file.name;
+            card.appendChild(img);
+            info.innerHTML = `<div class="file-name">${file.name}</div><div class="file-size">${file.size}</div>`;
+        } else {
+            info.innerHTML = `<div class="file-name">${file.name}</div><div class="file-size">${file.size}</div>`;
+        }
+        card.appendChild(info);
+        const actions = document.createElement('div');
+        actions.className = 'file-actions';
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'download-btn';
+        downloadBtn.textContent = 'Pobierz';
+        downloadBtn.onclick = () => {
+            if (file.type === 'text') {
+                const blob = new Blob([file.content], {type: 'text/plain'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = file.name;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            } else {
+                const a = document.createElement('a');
+                a.href = file.content;
+                a.download = file.name;
+                a.click();
+            }
+        };
+        actions.appendChild(downloadBtn);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Usuń';
+        deleteBtn.onclick = () => {
+            const files = getFiles();
+            files.splice(idx, 1);
+            saveFiles(files);
+            renderFiles();
+        };
+        actions.appendChild(deleteBtn);
+        card.appendChild(actions);
+        fileList.appendChild(card);
+    });
+}
+renderFiles();
+
+// Obsługa dodawania plików
+fileInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const filesArr = getFiles();
+            filesArr.push({
+                name: file.name,
+                type: file.type,
+                size: file.size ? (file.size + ' B') : '',
+                content: ev.target.result
+            });
+            saveFiles(filesArr);
+            renderFiles();
+        };
+        reader.readAsDataURL(file);
+    });
+    fileInput.value = '';
+});
+
+// Podgląd obrazów
+fileInput.addEventListener('input', (e) => {
+    filePreview.innerHTML = '';
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        if (file.type && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                img.alt = file.name;
+                filePreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+// Obsługa zapisywania tekstu
+saveTextBtn.addEventListener('click', () => {
+    const text = textArea.value.trim();
+    const name = fileNameInput.value.trim() || 'notatka.txt';
+    if (!text) {
+        textArea.classList.add('error');
+        setTimeout(() => textArea.classList.remove('error'), 800);
+        return;
+    }
+    const filesArr = getFiles();
+    filesArr.push({
+        name,
+        type: 'text',
+        content: text
+    });
+    saveFiles(filesArr);
+    renderFiles();
+    textArea.value = '';
+    fileNameInput.value = '';
 });
