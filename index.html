@@ -3,15 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapisywanko Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="theme-toggle">
+        <button id="toggleTheme" aria-label="Przełącz motyw"><span id="themeIcon">🌙</span></button>
+    </div>
+    <div class="container chat-container">
+        <header>
+            <h1>Zapisywanko Chat</h1>
+            <p>Rozmawiaj i zapisuj swoje wiadomości lokalnie!</p>
+        </header>
+        <main>
+            <div id="chatWindow" class="chat-window"></div>
+            <form id="chatForm" class="chat-form" autocomplete="off">
+                <input type="text" id="chatInput" placeholder="Napisz wiadomość..." maxlength="500" autofocus required>
+                <button type="submit">Wyślij</button>
+            </form>
+        </main>
+        <footer>
+            &copy; 2025 Zapisywanko Chat. Twoje rozmowy są bezpieczne i prywatne!
+        </footer>
+    </div>
+    <div id="toastContainer" class="toast-container"></div>
+    <audio id="notifySound" src="https://cdn.pixabay.com/audio/2022/10/16/audio_126b5b2b7b.mp3" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prosty Menadżer Plików</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Prosty Menadżer Plików</h1>
-            <p>Zapisuj i zarządzaj swoimi plikami</p>
+            <h1>Zapisywanko</h1>
+            <p>Przechowuj teksty, obrazy i pliki w jednym miejscu!</p>
         </header>
+        <main>
+            <section class="upload-section">
+                <h2>Dodaj plik lub obraz</h2>
+                <input type="file" id="fileInput" multiple accept="image/*,.txt,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.7z,.csv,.json,.xml,.mp3,.mp4,.wav,.avi,.mov,.ppt,.pptx">
+                <div id="filePreview"></div>
+            </section>
+            <section class="text-section">
+                <h2>Dodaj tekst</h2>
+                <textarea id="textArea" placeholder="Wpisz tutaj swój tekst..."></textarea>
+                <div class="text-controls">
+                    <input type="text" id="fileName" placeholder="Nazwa pliku tekstowego (np. notatka.txt)">
+                    <button id="saveText">Zapisz tekst</button>
+                </div>
+            </section>
+            <section class="files-section">
+                <h2>Twoje pliki i teksty</h2>
+                <div id="fileList" class="file-list"></div>
+                <div id="noFilesMessage">Brak zapisanych plików.</div>
+            </section>
+        </main>
+        <footer>
+            &copy; 2025 Zapisywanko. Wygodne przechowywanie wszystkiego!
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
 
         <main>
             <section class="upload-section">
