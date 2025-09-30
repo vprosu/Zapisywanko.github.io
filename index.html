@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prosty Menadżer Plików</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Prosty Menadżer Plików</h1>
+            <p>Zapisuj i zarządzaj swoimi plikami</p>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <h2>Dodaj nowy plik</h2>
+                <div class="upload-controls">
+                    <input type="file" id="fileInput" multiple>
+                    <button id="uploadBtn">Zapisz plik</button>
+                </div>
+                <div class="text-upload">
+                    <textarea id="textArea" placeholder="Wpisz tekst, który chcesz zapisać..."></textarea>
+                    <div class="text-controls">
+                        <input type="text" id="fileName" placeholder="Nazwa pliku (bez rozszerzenia)">
+                        <button id="saveTextBtn">Zapisz tekst</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="files-section">
+                <h2>Zapisane pliki</h2>
+                <div id="fileList" class="file-list">
+                    <!-- Files will be displayed here -->
+                    <p id="noFilesMessage">Brak zapisanych plików. Dodaj pierwszy plik!</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Twoje pliki są zapisane lokalnie w przeglądarce i nie znikną.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
