@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bezpieczny Czat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h2>Logowanie</h2>
+            <form id="loginForm">
+                <input type="password" id="password" placeholder="Wprowadź hasło" required>
+                <button type="submit">Zaloguj się</button>
+            </form>
+            <p id="errorMessage" class="error-message"></p>
+        </div>
+    </div>
+
+    <div class="chat-container hidden" id="chatContainer">
+        <header class="chat-header">
+            <h1>Bezpieczny Czat</h1>
+            <div class="header-controls">
+                <div class="volume-control">
+                    <span>🔊</span>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="50">
+                </div>
+                <button id="themeToggle" class="theme-toggle">🌙</button>
+                <button id="logoutBtn" class="logout-btn">Wyloguj</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="user-info">
+                    <input type="text" id="nicknameInput" placeholder="Twój nick" maxlength="20">
+                    <button id="setNicknameBtn">Ustaw</button>
+                </div>
+                
+                <div class="categories-section">
+                    <h3>Kategorie</h3>
+                    <ul id="categoriesList" class="categories-list">
+                        <!-- Categories will be added here dynamically -->
+                    </ul>
+                    <div class="add-category">
+                        <input type="text" id="newCategoryInput" placeholder="Nowa kategoria">
+                        <button id="addCategoryBtn">+</button>
+                    </div>
+                </div>
+                
+                <div class="search-section">
+                    <input type="text" id="searchInput" placeholder="Szukaj wiadomości...">
+                    <button id="searchBtn">Szukaj</button>
+                </div>
+                
+                <!-- Countdown Timer -->
+                <div id="countdownTimer" class="countdown-timer"></div>
+                
+                <!-- Trash Bin Icon -->
+                <div class="trash-bin-container">
+                    <button id="trashBinBtn" class="trash-bin-btn">
+                        🗑️ Kosz
+                    </button>
+                </div>
+            </aside>
+
+            <main class="chat-area">
+                <div class="messages-container">
+                    <div id="messagesArea" class="messages-area">
+                        <!-- Messages will appear here -->
+                    </div>
+                    <div class="loading-animation hidden" id="loadingAnimation">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                
+                <div class="message-input-area">
+                    <div class="message-actions-top">
+                        <label for="fileInput" class="file-upload-label">
+                            📎
+                            <input type="file" id="fileInput" accept="*/*" multiple>
+                        </label>
+                        <select id="categorySelect">
+                            <option value="">Bez kategorii</option>
+                            <!-- Categories will be added here dynamically -->
+                        </select>
+                    </div>
+                    <textarea id="messageInput" placeholder="Napisz wiadomość..." rows="3"></textarea>
+                    <button id="sendMessageBtn">Wyślij</button>
+                </div>
+            </main>
+            
+            <!-- Activity Sidebar -->
+            <aside class="activity-sidebar">
+                <h3>Aktywność użytkowników</h3>
+                <div id="userActivityList" class="user-activity-list">
+                    <!-- User activity will be added here dynamically -->
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Countdown Timer -->
+    <div id="countdownTimer" class="countdown-timer"></div>
+
+    <!-- Image Preview Modal -->
+    <div id="imagePreviewModal" class="modal hidden">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="previewImage">
+        <div class="modal-caption"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
